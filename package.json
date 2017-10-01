@@ -3,7 +3,7 @@
   "bin": {
     "sfo": "index.js"
   },
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,8 +20,8 @@
     "url": "https://github.com/btholt/sfo/issues"
   },
   "homepage": "https://github.com/btholt/sfo#readme",
-  "dependencies": {},
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.0.0",
