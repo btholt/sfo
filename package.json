@@ -1,0 +1,62 @@
+{
+  "name": "sfo",
+  "bin": {
+    "sfo": "node ./index.js"
+  },
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/btholt/sfo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/btholt/sfo/issues"
+  },
+  "homepage": "https://github.com/btholt/sfo#readme",
+  "dependencies": {
+    "tmp": "0.0.33"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-runtime": "^6.26.0",
+    "cross-env": "^5.0.0",
+    "cssnano": "^3.10.0",
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-config-prettier": "^2.1.1",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-flowtype": "^2.34.0",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-prettier": "^2.1.1",
+    "eslint-plugin-react": "^7.0.1",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "flow-bin": "^0.56.0",
+    "flowtype-loader": "^0.2.2",
+    "gzip-size-cli": "^2.0.0",
+    "jest": "^21.2.1",
+    "npm-run-all": "^4.0.2",
+    "postcss-cssnext": "^3.0.2",
+    "postcss-import": "^11.0.0",
+    "postcss-loader": "^2.0.5",
+    "prettier": "^1.4.0",
+    "style-loader": "^0.18.1",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1"
+  }
+}
