@@ -1,7 +1,7 @@
 {
   "name": "sfo",
   "bin": {
-    "sfo": "node ./index.js"
+    "sfo": "index.js"
   },
   "version": "0.1.0",
   "description": "",
@@ -20,9 +20,7 @@
     "url": "https://github.com/btholt/sfo/issues"
   },
   "homepage": "https://github.com/btholt/sfo#readme",
-  "dependencies": {
-    "tmp": "0.0.33"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
@@ -56,6 +54,7 @@
     "postcss-loader": "^2.0.5",
     "prettier": "^1.4.0",
     "style-loader": "^0.18.1",
+    "tmp": "0.0.33",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   }
