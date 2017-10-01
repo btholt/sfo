@@ -3,7 +3,7 @@ const cssNext = require("postcss-cssnext");
 const cssImport = require("postcss-import");
 const cssNano = require("cssnano");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const FlowtypePlugin = require("flowtype-loader/plugin");
+// const FlowtypePlugin = require("flowtype-loader/plugin");
 const webpack = require("webpack");
 const fs = require("fs");
 const indexFile = fs.readFileSync(path.resolve(__dirname, "../index.html"));
@@ -50,7 +50,10 @@ const config = {
     reasons: true,
     chunks: false
   },
-  plugins: [new FlowtypePlugin(), new ExtractTextPlugin("style.css")],
+  plugins: [
+    // new FlowtypePlugin(),
+    new ExtractTextPlugin("style.css")
+  ],
   module: {
     rules: [
       {
@@ -62,11 +65,11 @@ const config = {
           configFile: path.resolve(__dirname, "../.eslintrc.json")
         }
       },
-      {
-        enforce: "pre",
-        test: /\.jsx?$/,
-        loader: "flowtype-loader"
-      },
+      // {
+      //   enforce: "pre",
+      //   test: /\.jsx?$/,
+      //   loader: "flowtype-loader"
+      // },
       {
         test: /\.jsx?$/,
         loader: require.resolve("babel-loader"),
