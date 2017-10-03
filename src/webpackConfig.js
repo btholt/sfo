@@ -3,10 +3,22 @@ const cssNext = require("postcss-cssnext");
 const cssImport = require("postcss-import");
 const cssNano = require("cssnano");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-// const FlowtypePlugin = require("flowtype-loader/plugin");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require("webpack");
 const fs = require("fs");
-const indexFile = fs.readFileSync(path.resolve(__dirname, "../index.html"));
+const express = require("express");
+const publicPath = path.join(process.cwd(), "public");
+const buildPath = path.join(process.cwd(), "build");
+const distPath = path.join(process.cwd(), "dist");
+
+const htmlMinOptions = {
+  collapseWhitespace: true,
+  sortAttributes: true,
+  sortClassName: true
+};
 
 const babelrc = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "../.babelrc"))
@@ -19,18 +31,16 @@ const config = {
   entry: "TO BE REPLACED",
   devtool: isDev ? "cheap-eval-source-map" : false,
   output: {
-    path: path.resolve(process.cwd(), "public"),
+    path: path.join(process.cwd(), "build/dist"),
     filename: "bundle.js",
-    publicPath: "/public/"
+    publicPath: "/dist/"
   },
   devServer: {
-    contentBase: path.resolve(process.cwd(), "public"),
-    publicPath: "/public/",
-    // historyApiFallback: true,
+    contentBase: distPath,
+    publicPath: "/dist/",
+    historyApiFallback: true,
     before(app) {
-      app.get(/^(?!\/public\/.*)/gi, function(req, res) {
-        res.end(indexFile);
-      });
+      app.use("/public", express.static(publicPath));
     }
   },
   resolve: {
@@ -51,8 +61,17 @@ const config = {
     chunks: false
   },
   plugins: [
-    // new FlowtypePlugin(),
-    new ExtractTextPlugin("style.css")
+    new ExtractTextPlugin("style.css"),
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
+    }),
+    new HtmlWebpackPlugin({
+      inject: false,
+      template: "../index.ejs",
+      title: "SFO",
+      filename: "../index.html",
+      minify: isDev ? false : htmlMinOptions
+    })
   ],
   module: {
     rules: [
@@ -65,11 +84,6 @@ const config = {
           configFile: path.resolve(__dirname, "../.eslintrc.json")
         }
       },
-      // {
-      //   enforce: "pre",
-      //   test: /\.jsx?$/,
-      //   loader: "flowtype-loader"
-      // },
       {
         test: /\.jsx?$/,
         loader: require.resolve("babel-loader"),
@@ -93,7 +107,6 @@ const config = {
             require.resolve("babel-plugin-transform-react-jsx"),
             require.resolve("babel-plugin-transform-class-properties")
           ]
-          // cacheDirectory: true
         }
       },
       {
@@ -116,5 +129,17 @@ const config = {
     ]
   }
 };
+
+if (!isDev) {
+  config.plugins.push(
+    new CleanWebpackPlugin(["./build"], {
+      verbose: true,
+      dry: false,
+      root: process.cwd()
+    }),
+    new UglifyJSPlugin(),
+    new CopyPlugin([{ from: publicPath, to: path.join(buildPath, "public") }])
+  );
+}
 
 module.exports = config;

@@ -2,33 +2,108 @@
 const DevServer = require("webpack-dev-server");
 const webpack = require("webpack");
 const path = require("path");
-const webpackConfig = require("./src/webpackConfig");
 const _ = require("lodash");
 const fs = require("fs");
 const tmp = require("tmp");
+const meow = require("meow");
+const chalk = require("chalk");
+const portfinder = require("portfinder");
 
-const tempDir = path.resolve(process.cwd(), ".tmp");
+const errLog = msg => console.log(chalk.red(msg));
 
-if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir);
+const cli = meow(
+  `
+  Usage
+    $ sfo <entry input>
+
+  Commands
+    <no command>, dev   start a dev server
+    bundle              prepare an artifact for deployment
+    size                visualize the size of your app
+    integrate           symlink linting configs into your project
+
+  Options
+    --typescript, -t    use TypeScript instead of Flow
+`,
+  {
+    flags: {
+      typescript: {
+        type: "boolean",
+        alias: "t",
+        default: false
+      }
+    }
+  }
+);
+
+if (!cli.input.length) {
+  cli.showHelp();
 }
 
-const entry = path.resolve(process.cwd(), process.argv[2]);
-const templateString = fs.readFileSync(
-  path.resolve(__dirname, "./src/client.js")
-);
-const tempPath = path.resolve(tempDir, "webpackEntry.js");
-const templatedEntry = _.template(templateString)({
-  USER_FN: path.relative(tempDir, entry)
-});
-fs.writeFileSync(tempPath, templatedEntry);
+if (cli.input.length !== 2) {
+  errLog("Improper number of arguments");
+  process.exit(1);
+}
 
-webpackConfig.entry = tempPath;
+// if (cli.input.length === 2 || cli.input[0] === 'dev') {
+//   const inputPath = cli.input.length === 2 ? cli.input[0] : cli.input[1];
+//   bundle(inputPath, true);
+// }
 
-const compiler = webpack(webpackConfig);
+switch (cli.input[0]) {
+  case "dev":
+    bundle(cli.input[1], true);
+    break;
+  case "bundle":
+    bundle(cli.input[1], false);
+    break;
+  case "integrate":
+  case "size":
+    errLog("Not implemented yet.");
+    process.exit(1);
+  default:
+    errLog(`${cli.input[0]} is not a valid command`);
+    process.exit(1);
+}
 
-const server = new DevServer(compiler, webpackConfig.devServer);
+function bundle(inputPath, isDev) {
+  process.env.NODE_ENV = isDev ? "development" : "production";
+  const webpackConfig = require("./src/webpackConfig");
+  const tempDir = path.resolve(process.cwd(), ".tmp");
 
-server.listen(8080, "127.0.0.1", () => {
-  console.log("Starting server on http://localhost:8080");
-});
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir);
+  }
+
+  const entry = path.resolve(process.cwd(), inputPath);
+  const templateString = fs.readFileSync(
+    path.resolve(__dirname, "./src/client.js")
+  );
+  const tempPath = path.resolve(tempDir, "webpackEntry.js");
+  const templatedEntry = _.template(templateString)({
+    USER_FN: path.relative(tempDir, entry)
+  });
+  fs.writeFileSync(tempPath, templatedEntry);
+
+  webpackConfig.entry = tempPath;
+
+  const compiler = webpack(webpackConfig);
+
+  if (isDev) {
+    const server = new DevServer(compiler, webpackConfig.devServer);
+
+    portfinder.getPort((err, port) => {
+      server.listen(port, "127.0.0.1", () => {
+        console.log(`Starting server on http://localhost:${port}`);
+      });
+    });
+  } else {
+    compiler.run((err, stats) => {
+      console.log(
+        stats.toString({
+          colors: true
+        })
+      );
+    });
+  }
+}

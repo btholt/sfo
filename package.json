@@ -3,7 +3,7 @@
   "bin": {
     "sfo": "index.js"
   },
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "url": "git+https://github.com/btholt/sfo.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Brian Holt <btholt+sfo@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/btholt/sfo/issues"
@@ -32,6 +32,9 @@
     "babel-preset-env": "^1.5.1",
     "babel-preset-flow": "^6.23.0",
     "babel-runtime": "^6.26.0",
+    "chalk": "^2.1.0",
+    "clean-webpack-plugin": "^0.1.17",
+    "copy-webpack-plugin": "^4.1.0",
     "cssnano": "^3.10.0",
     "eslint": "^4.8.0",
     "eslint-config-airbnb": "^15.0.1",
@@ -42,15 +45,21 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-prettier": "^2.1.1",
     "eslint-plugin-react": "^7.0.1",
+    "express": "^4.16.1",
     "extract-text-webpack-plugin": "^3.0.0",
     "flow-bin": "^0.56.0",
+    "flow-webpack-plugin": "^1.1.0",
+    "html-webpack-plugin": "^2.30.1",
     "lodash": "^4.17.4",
+    "meow": "^3.7.0",
+    "portfinder": "^1.0.13",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.5",
     "prettier": "^1.4.0",
     "style-loader": "^0.18.1",
     "tmp": "0.0.33",
+    "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   }
