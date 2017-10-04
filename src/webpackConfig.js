@@ -133,6 +133,7 @@ const config = {
           ],
           plugins: [
             require.resolve("babel-plugin-syntax-jsx"),
+            require.resolve("babel-plugin-syntax-dynamic-import"),
             require.resolve("babel-plugin-transform-react-jsx"),
             require.resolve("babel-plugin-transform-class-properties")
           ]
