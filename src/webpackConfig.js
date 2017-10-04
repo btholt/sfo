@@ -7,12 +7,17 @@ const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const HtmlHarddiskPlugin = require("html-webpack-harddisk-plugin");
+const cleanup = require("node-cleanup");
 const webpack = require("webpack");
 const fs = require("fs");
+const rimraf = require("rimraf");
+const chalk = require("chalk");
 const express = require("express");
 const publicPath = path.join(process.cwd(), "public");
 const buildPath = path.join(process.cwd(), "build");
 const distPath = path.join(process.cwd(), "dist");
+let indexFile;
 
 const htmlMinOptions = {
   collapseWhitespace: true,
@@ -41,6 +46,28 @@ const config = {
     historyApiFallback: true,
     before(app) {
       app.use("/public", express.static(publicPath));
+      app.get(/^(?!\/(public|dist)\/.*)/gi, function(req, res) {
+        if (!indexFile) {
+          fs.readFile(
+            path.join(process.cwd(), ".tmp/index.html"),
+            (err, file) => {
+              if (err) {
+                console.log(
+                  chalk.red(
+                    "yikes, we had issues loading the HTML. this shouldn't happen. you should probably file an issue"
+                  )
+                );
+                console.error(err);
+                process.exit(1);
+              }
+              indexFile = file.toString();
+              res.end(indexFile);
+            }
+          );
+        } else {
+          res.end(indexFile);
+        }
+      });
     }
   },
   resolve: {
@@ -69,9 +96,11 @@ const config = {
       inject: false,
       template: "../index.ejs",
       title: "SFO",
-      filename: "../index.html",
-      minify: isDev ? false : htmlMinOptions
-    })
+      filename: isDev ? "../../.tmp/index.html" : "../index.html",
+      minify: isDev ? false : htmlMinOptions,
+      alwaysWriteToDisk: true
+    }),
+    new HtmlHarddiskPlugin()
   ],
   module: {
     rules: [
@@ -141,5 +170,19 @@ if (!isDev) {
     new CopyPlugin([{ from: publicPath, to: path.join(buildPath, "public") }])
   );
 }
+
+cleanup(
+  function(exitCode, signal) {
+    rimraf(path.join(process.cwd(), ".tmp"), () => {
+      process.kill(process.pid, signal);
+    });
+    cleanup.uninstall();
+    return false;
+  },
+  {
+    ctrl_C: "{^C}",
+    uncaughtException: "Uh oh. Look what happened:"
+  }
+);
 
 module.exports = config;
