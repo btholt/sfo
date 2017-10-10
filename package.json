@@ -33,6 +33,7 @@
     "babel-preset-env": "^1.5.1",
     "babel-preset-flow": "^6.23.0",
     "babel-runtime": "^6.26.0",
+    "buble-loader": "^0.4.1",
     "chalk": "^2.1.0",
     "clean-webpack-plugin": "^0.1.17",
     "copy-webpack-plugin": "^4.1.0",

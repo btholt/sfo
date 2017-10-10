@@ -84,8 +84,8 @@ const config = {
   },
   resolveLoader: {
     alias: {
-      "babel-loader": path.dirname(
-        require.resolve("babel-loader/package.json")
+      "buble-loader": path.dirname(
+        require.resolve("buble-loader/package.json")
       ),
       "css-loader": path.dirname(require.resolve("css-loader/package.json")),
       "vue-style-loader": path.dirname(
@@ -128,6 +128,9 @@ const config = {
         test: /\.vue?$/,
         loader: require.resolve("vue-loader"),
         options: {
+          loaders: {
+            js: "buble-loader"
+          },
           extractCSS: true
         }
       },
