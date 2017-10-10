@@ -36,6 +36,7 @@
     "chalk": "^2.1.0",
     "clean-webpack-plugin": "^0.1.17",
     "copy-webpack-plugin": "^4.1.0",
+    "css-loader": "^0.28.7",
     "cssnano": "^3.10.0",
     "eslint": "^4.8.0",
     "eslint-config-airbnb": "^15.0.1",
@@ -64,6 +65,9 @@
     "style-loader": "^0.18.1",
     "tmp": "0.0.33",
     "uglifyjs-webpack-plugin": "^0.4.6",
+    "vue-loader": "^13.0.5",
+    "vue-style-loader": "^3.0.3",
+    "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   }

@@ -71,7 +71,7 @@ const config = {
     }
   },
   resolve: {
-    extensions: [".js", ".jsx", ".json"],
+    extensions: [".js", ".jsx", ".vue", ".json"],
     modules: [
       path.resolve(__dirname, "node_modules"),
       path.resolve(process.cwd(), "node_modules")
@@ -79,6 +79,17 @@ const config = {
     alias: {
       "babel-runtime": path.dirname(
         require.resolve("babel-runtime/package.json")
+      )
+    }
+  },
+  resolveLoader: {
+    alias: {
+      "babel-loader": path.dirname(
+        require.resolve("babel-loader/package.json")
+      ),
+      "css-loader": path.dirname(require.resolve("css-loader/package.json")),
+      "vue-style-loader": path.dirname(
+        require.resolve("vue-style-loader/package.json")
       )
     }
   },
@@ -111,6 +122,13 @@ const config = {
         exclude: /node_modules/,
         options: {
           configFile: path.resolve(__dirname, "../.eslintrc.json")
+        }
+      },
+      {
+        test: /\.vue?$/,
+        loader: require.resolve("vue-loader"),
+        options: {
+          extractCSS: true
         }
       },
       {
