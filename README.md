@@ -14,7 +14,7 @@ Nope! It works without whatever you want!
 
 ## Example
 
-```
+```es6
 import React from 'react';
 import { render } from 'react-dom;
 import './my-styles.css';
