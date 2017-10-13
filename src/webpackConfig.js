@@ -8,6 +8,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlHarddiskPlugin = require("html-webpack-harddisk-plugin");
+const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
 const cleanup = require("node-cleanup");
 const webpack = require("webpack");
 const fs = require("fs");
@@ -17,6 +18,11 @@ const express = require("express");
 const publicPath = path.join(process.cwd(), "public");
 const buildPath = path.join(process.cwd(), "build");
 const distPath = path.join(process.cwd(), "dist");
+const pathsToCheck = {
+  babel: path.join(process.cwd(), ".babelrc"),
+  html: path.join(process.cwd(), "index.html")
+};
+const isDev = process.env.NODE_ENV === "development";
 let indexFile;
 
 const htmlMinOptions = {
@@ -25,11 +31,30 @@ const htmlMinOptions = {
   sortClassName: true
 };
 
-const babelrc = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "../.babelrc"))
-);
-
-const isDev = process.env.NODE_ENV === "development";
+const indexHtmlExists = fs.existsSync(pathsToCheck.html);
+const htmlOptions = indexHtmlExists
+  ? {
+      inject: true,
+      template: pathsToCheck.html,
+      filename: isDev ? "../../.tmp/index.html" : "../index.html",
+      minify: isDev ? false : htmlMinOptions,
+      alwaysWriteToDisk: true,
+      inlineSource: "sfo-client-dev.js$"
+    }
+  : {
+      inject: false,
+      template: "../index.ejs",
+      title: "SFO",
+      filename: isDev ? "../../.tmp/index.html" : "../index.html",
+      minify: isDev ? false : htmlMinOptions,
+      alwaysWriteToDisk: true
+    };
+// get configs
+const babelConfig = fs.existsSync(pathsToCheck.babel)
+  ? {
+      babelrc: true
+    }
+  : require("./generate-babel-config");
 
 const config = {
   context: __dirname,
@@ -96,21 +121,14 @@ const config = {
   stats: {
     colors: true,
     reasons: true,
-    chunks: false
+    chunks: true
   },
   plugins: [
     new ExtractTextPlugin("style.css"),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
     }),
-    new HtmlWebpackPlugin({
-      inject: false,
-      template: "../index.ejs",
-      title: "SFO",
-      filename: isDev ? "../../.tmp/index.html" : "../index.html",
-      minify: isDev ? false : htmlMinOptions,
-      alwaysWriteToDisk: true
-    }),
+    new HtmlWebpackPlugin(htmlOptions),
     new HtmlHarddiskPlugin()
   ],
   module: {
@@ -137,28 +155,7 @@ const config = {
       {
         test: /\.jsx?$/,
         loader: require.resolve("babel-loader"),
-        options: {
-          babelrc: false,
-          presets: [
-            require.resolve("babel-preset-flow"),
-            [
-              require.resolve("babel-preset-env"),
-              {
-                targets: {
-                  browsers: "last 2 versions"
-                },
-                loose: true,
-                modules: false
-              }
-            ]
-          ],
-          plugins: [
-            require.resolve("babel-plugin-syntax-jsx"),
-            require.resolve("babel-plugin-syntax-dynamic-import"),
-            require.resolve("babel-plugin-transform-react-jsx"),
-            require.resolve("babel-plugin-transform-class-properties")
-          ]
-        }
+        options: babelConfig
       },
       {
         test: /\.css$/,
@@ -191,6 +188,10 @@ if (!isDev) {
     new UglifyJSPlugin(),
     new CopyPlugin([{ from: publicPath, to: path.join(buildPath, "public") }])
   );
+} else {
+  if (indexHtmlExists) {
+    config.plugins.push(new HtmlWebpackInlineSourcePlugin());
+  }
 }
 
 cleanup(
@@ -207,4 +208,11 @@ cleanup(
   }
 );
 
-module.exports = config;
+module.exports = entry => {
+  if (indexHtmlExists && isDev) {
+    config.entry = [path.join(__dirname, "sfo-client-dev.js"), entry];
+  } else {
+    config.entry = entry;
+  }
+  return config;
+};
