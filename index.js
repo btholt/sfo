@@ -24,12 +24,18 @@ const cli = meow(
 
   Options
     --typescript, -t    use TypeScript instead of Flow
+    --no-eslint, -n     don't use the integrated eslint
 `,
   {
     flags: {
       typescript: {
         type: "boolean",
         alias: "t",
+        default: false
+      },
+      "no-eslint": {
+        type: "boolean",
+        alias: "n",
         default: false
       }
     }
@@ -68,6 +74,7 @@ switch (cli.input[0]) {
 
 function bundle(inputPath, isDev) {
   process.env.NODE_ENV = isDev ? "development" : "production";
+
   const entry = path.resolve(process.cwd(), inputPath);
   const webpackConfigFn = require("./src/webpackConfig");
   const tempDir = path.resolve(process.cwd(), ".tmp");
@@ -85,7 +92,7 @@ function bundle(inputPath, isDev) {
   });
   fs.writeFileSync(tempPath, templatedEntry);
 
-  const webpackConfig = webpackConfigFn(tempPath);
+  const webpackConfig = webpackConfigFn(tempPath, cli.flags);
 
   const compiler = webpack(webpackConfig);
 

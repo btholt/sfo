@@ -58,7 +58,6 @@
     "lodash": "^4.17.4",
     "meow": "^3.7.0",
     "node-cleanup": "^2.1.2",
-    "oscuro": "^1.0.0",
     "portfinder": "^1.0.13",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",

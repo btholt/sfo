@@ -56,6 +56,16 @@ const babelConfig = fs.existsSync(pathsToCheck.babel)
     }
   : require("./generate-babel-config");
 
+const eslistLoader = {
+  enforce: "pre",
+  test: /\.jsx?$/,
+  loader: "eslint-loader",
+  exclude: /node_modules/,
+  options: {
+    configFile: path.resolve(__dirname, "../.eslintrc.json")
+  }
+};
+
 const config = {
   context: __dirname,
   entry: "TO BE REPLACED",
@@ -134,15 +144,6 @@ const config = {
   module: {
     rules: [
       {
-        enforce: "pre",
-        test: /\.jsx?$/,
-        loader: "eslint-loader",
-        exclude: /node_modules/,
-        options: {
-          configFile: path.resolve(__dirname, "../.eslintrc.json")
-        }
-      },
-      {
         test: /\.vue?$/,
         loader: require.resolve("vue-loader"),
         options: {
@@ -208,11 +209,16 @@ cleanup(
   }
 );
 
-module.exports = entry => {
+module.exports = (entry, options) => {
   if (indexHtmlExists && isDev) {
     config.entry = [path.join(__dirname, "sfo-client-dev.js"), entry];
   } else {
     config.entry = entry;
   }
+
+  if (!options["no-eslint"]) {
+    config.module.rules.push(eslistLoader);
+  }
+
   return config;
 };
