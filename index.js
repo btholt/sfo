@@ -63,8 +63,10 @@ switch (cli.input[0]) {
   case "bundle":
     bundle(cli.input[1], false);
     break;
-  case "integrate":
   case "size":
+    bundle(cli.input[1], false, true);
+    break;
+  case "integrate":
     errLog("Not implemented yet.");
     process.exit(1);
   default:
@@ -72,7 +74,7 @@ switch (cli.input[0]) {
     process.exit(1);
 }
 
-function bundle(inputPath, isDev) {
+function bundle(inputPath, isDev, isSizeAnalysis) {
   process.env.NODE_ENV = isDev ? "development" : "production";
 
   const entry = path.resolve(process.cwd(), inputPath);
@@ -91,8 +93,10 @@ function bundle(inputPath, isDev) {
     USER_FN: path.relative(tempDir, entry)
   });
   fs.writeFileSync(tempPath, templatedEntry);
-
-  const webpackConfig = webpackConfigFn(tempPath, cli.flags);
+  const webpackConfig = webpackConfigFn(tempPath, {
+    noEslint: cli.flags["no-eslint"],
+    isSizeAnalysis
+  });
 
   const compiler = webpack(webpackConfig);
 

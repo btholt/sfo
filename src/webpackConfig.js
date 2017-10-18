@@ -25,6 +25,8 @@ const pathsToCheck = {
   html: path.join(process.cwd(), "index.html")
 };
 const isDev = process.env.NODE_ENV === "development";
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 let indexFile;
 
 const htmlMinOptions = {
@@ -80,6 +82,10 @@ if (!isDev) {
     } catch (e) {}
   }
 }
+
+const sizeAnalysisPlugin = new BundleAnalyzerPlugin({
+  defaultSizes: "gzip"
+});
 
 const config = {
   context: __dirname,
@@ -231,8 +237,12 @@ module.exports = (entry, options) => {
     config.entry = entry;
   }
 
-  if (!options["no-eslint"]) {
+  if (!options.noEslint) {
     config.module.rules.push(eslintLoader);
+  }
+
+  if (options.isSizeAnalysis) {
+    config.plugins.push(sizeAnalysisPlugin);
   }
 
   return config;
