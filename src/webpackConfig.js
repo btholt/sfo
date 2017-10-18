@@ -1,4 +1,5 @@
 const path = require("path");
+const url = require("url");
 const cssNext = require("postcss-cssnext");
 const cssImport = require("postcss-import");
 const cssNano = require("cssnano");
@@ -12,6 +13,7 @@ const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin
 const cleanup = require("node-cleanup");
 const webpack = require("webpack");
 const fs = require("fs");
+const _ = require("lodash");
 const rimraf = require("rimraf");
 const chalk = require("chalk");
 const express = require("express");
@@ -56,7 +58,7 @@ const babelConfig = fs.existsSync(pathsToCheck.babel)
     }
   : require("./generate-babel-config");
 
-const eslistLoader = {
+const eslintLoader = {
   enforce: "pre",
   test: /\.jsx?$/,
   loader: "eslint-loader",
@@ -66,6 +68,19 @@ const eslistLoader = {
   }
 };
 
+let servedFromPath = "/";
+if (!isDev) {
+  const packageBuffer = fs.readFileSync(
+    path.join(process.cwd(), "package.json")
+  );
+  if (packageBuffer) {
+    try {
+      const packageJson = JSON.parse(packageBuffer);
+      servedFromPath = _.get(packageJson, "homepage", servedFromPath);
+    } catch (e) {}
+  }
+}
+
 const config = {
   context: __dirname,
   entry: "TO BE REPLACED",
@@ -73,7 +88,7 @@ const config = {
   output: {
     path: path.join(process.cwd(), "build/dist"),
     filename: "bundle.js",
-    publicPath: "/dist/"
+    publicPath: url.resolve(servedFromPath, "dist/")
   },
   devServer: {
     contentBase: distPath,
@@ -167,7 +182,7 @@ const config = {
             options: {
               plugins: () => [
                 cssImport({ addDependencyTo: webpack }),
-                cssNext(),
+                cssNext({ warnForDuplicates: false }),
                 cssNano()
               ],
               sourceMap: isDev ? "inline" : false
@@ -217,7 +232,7 @@ module.exports = (entry, options) => {
   }
 
   if (!options["no-eslint"]) {
-    config.module.rules.push(eslistLoader);
+    config.module.rules.push(eslintLoader);
   }
 
   return config;
