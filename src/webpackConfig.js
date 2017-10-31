@@ -28,6 +28,7 @@ const isDev = process.env.NODE_ENV === "development";
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 let indexFile;
+const loadingFile = fs.readFileSync(path.join(__dirname, 'loading.html'));
 
 const htmlMinOptions = {
   collapseWhitespace: true,
@@ -110,14 +111,15 @@ const config = {
               if (err) {
                 console.log(
                   chalk.red(
-                    "yikes, we had issues loading the HTML. this shouldn't happen. you should probably file an issue"
+                    "received request before index.html was ready, page will automatically try again"
                   )
                 );
                 console.error(err);
-                process.exit(1);
+                res.status(500).end(loadingFile);
+              } else {
+                indexFile = file.toString();
+                res.end(indexFile);
               }
-              indexFile = file.toString();
-              res.end(indexFile);
             }
           );
         } else {
