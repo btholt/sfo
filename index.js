@@ -25,6 +25,7 @@ const cli = meow(
   Options
     --typescript, -t    use TypeScript instead of Flow
     --no-eslint, -n     don't use the integrated eslint
+    --title, -T         title for the name of the home page
 `,
   {
     flags: {
@@ -37,6 +38,11 @@ const cli = meow(
         type: "boolean",
         alias: "n",
         default: false
+      },
+      title: {
+        type: "string",
+        alias: "T",
+        default: "sfo"
       }
     }
   }
@@ -67,11 +73,26 @@ switch (cli.input[0]) {
     bundle(cli.input[1], false, true);
     break;
   case "integrate":
-    errLog("Not implemented yet.");
-    process.exit(1);
+    integrate(cli.input[1]);
+    break;
   default:
     errLog(`${cli.input[0]} is not a valid command`);
     process.exit(1);
+}
+
+function integrate(inputPath) {
+  console.log(chalk.green("Integrating ESLint"));
+  const destination = path.resolve(process.cwd(), inputPath, ".eslintrc.json");
+  const ourConfig = path.resolve(__dirname, ".eslintrc.json");
+  fs.symlink(ourConfig, destination, err => {
+    if (err) {
+      console.log(chalk.red("symlink error"));
+      console.log(chalk.red(err));
+      process.exit(1);
+    }
+    console.log(chalk.green("Success!"));
+    process.exit(0);
+  });
 }
 
 function bundle(inputPath, isDev, isSizeAnalysis) {
@@ -94,8 +115,9 @@ function bundle(inputPath, isDev, isSizeAnalysis) {
   });
   fs.writeFileSync(tempPath, templatedEntry);
   const webpackConfig = webpackConfigFn(tempPath, {
-    noEslint: cli.flags["no-eslint"],
-    isSizeAnalysis
+    noEslint: cli["no-eslint"],
+    isSizeAnalysis,
+    title: cli.flags.title ? cli.flags.title : "sfo"
   });
 
   const compiler = webpack(webpackConfig);
@@ -105,7 +127,7 @@ function bundle(inputPath, isDev, isSizeAnalysis) {
 
     portfinder.getPort((err, port) => {
       server.listen(port, "127.0.0.1", () => {
-        console.log(`Starting server on http://localhost:${port}`);
+        console.log(chalk.green(`Starting server on http://localhost:${port}`));
       });
     });
   } else {

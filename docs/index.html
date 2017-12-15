@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>sfo docs</title>
+</head>
+
+<body>
+
+  <section id="head">
+    <h1>
+      <span id="globe">🌎</span>
+      <span id="plane">✈️</span> sfo</h1>
+  </section>
+
+  <section id="intro">
+    <h2>
+      What is sfo?
+    </h2>
+    <p>
+      sfo is an instant build process. Rather than having to manage your configuration of tools like Webpack, Babel, ESLint, and
+      others, sfo governs these tools for you.
+    </p>
+  </section>
+
+  <section id="how-to">
+    <h2>How to use sfo</h2>
+    <p>
+      sfo will take care of all the build process for both JavaScript and HTML, generating your index.html, and your linting as
+      well. All you need to do is write an entry point file that exports a default function that does your rendering. From
+      there sfo will do the rest.
+    </p>
+    <p>
+      sfo is not tied to any one framework. sfo is built to handle projects in frameworks like React, Angular, and Vue.
+    </p>
+  </section>
+
+  <section id="examples">
+    <h2>Code Examples</h2>
+    <div>
+      <h3 id="react">React</h3>
+      <pre><code>
+import React from "react";
+import { render } from "react-dom";
+
+const App = () => {
+  return <h1>Hello sfo!</h1>
+}
+
+export default function (node) {
+  render(<App />, node);
+}
+      </code></pre>
+    </div>
+
+    <div>
+      <h3 id="vue">Vue</h3>
+      <pre><code>
+import Vue from "vue";
+import App from "./VueApp.vue";
+
+export default function(node) {
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: node,
+    render: h => h(App)
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section id="usage">
+    <h2>Usage</h2>
+    <h3 id="get-started">Get Started</h3>
+    <pre><code>npm install --global sfo</code></pre>
+    <pre><code>sfo dev [your script file]</code></pre>
+    <h3 id="commands">Commands</h3>
+    <pre><code>sfo dev [your script file]</code></pre>
+    <p>Run sfo in dev mode. Get all the useful features of Webpack's dev server.</p>
+    <pre><code>sfo bundle [your entry file]</code></pre>
+    <p>Bundles for production. Minifies, tree shakes, copies in files from your public directory, ready for production. Outputs
+      to
+      <code>./build/</code>.</p>
+    <pre><code>sfo size [your entry file]</code></pre>
+    <p>Visualize your Webpack bundle so you can see where your file size is coming from.</p>
+    <h3 id="flags">Flags</h3>
+    <pre><code>--help, -h</code></pre>
+    <p>See help message.</p>
+    <pre><code>--version, -v</code></pre>
+    <p>See version of sfo.</p>
+    <pre><code>--no-eslint, -n</code></pre>
+    <p>Does not run ESLint against your code.</p>
+    <pre><code>--title "[your title]", -T "[your title]"</code></pre>
+    <p>Changes the title of in the head of your index.html.</p>
+    <h3 id="shadowing">Shadowing</h3>
+    <p>
+      Does one part of sfo not satisfy your requirements? sfo allows you to replace only the parts you need to. Both your
+      <code>.babelrc</code> and
+      <code>index.html</code> can be overwritten; just write your file with either of those names and sfo will use those instead of its own files.
+    </p>
+  </section>
+
+
+
+</body>
+
+</html>

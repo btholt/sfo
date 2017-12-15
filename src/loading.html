@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     h2 {
       margin: 0;
     }
+
     .loading-container {
       height: 80vh;
       width: 85%;
@@ -17,14 +19,17 @@
       justify-content: center;
       align-items: center;
     }
+
     .loading {
       width: 50%;
       text-align: center;
       position: relative;
     }
+
     #earth {
       font-size: 50px;
     }
+
     #plane {
       width: 100%;
       line-height: 50px;
@@ -33,6 +38,7 @@
       position: absolute;
       top: 0;
     }
+
     #cloud {
       width: 50%;
       line-height: 50px;
@@ -42,14 +48,21 @@
       left: 25%;
       top: 0;
     }
+
     .plane-icon {
       display: inline-block;
       transform: rotate(300deg);
     }
+
     .cloud-icon {
       display: inline-block;
       transform: rotate(90deg);
     }
+
+    body {
+      background-color: lightskyblue;
+    }
+
     @keyframes rotate {
       to {
         transform: rotate(360deg);
@@ -57,6 +70,7 @@
     }
   </style>
 </head>
+
 <body>
   <h1>sfo is loading …</h1>
   <h2>(we'll try reloading here in a few seconds)</h2>
@@ -64,7 +78,7 @@
     <div class="loading">
       <h2 id="earth">🌎</h2>
       <h2 id="cloud">
-          <span class="cloud-icon">☁️</span>
+        <span class="cloud-icon">☁️</span>
       </h2>
       <h2 id="plane">
         <span class="plane-icon">✈️</span>
@@ -77,4 +91,5 @@
     }, 5000);
   </script>
 </body>
+
 </html>

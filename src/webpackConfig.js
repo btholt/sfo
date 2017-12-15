@@ -22,13 +22,14 @@ const buildPath = path.join(process.cwd(), "build");
 const distPath = path.join(process.cwd(), "dist");
 const pathsToCheck = {
   babel: path.join(process.cwd(), ".babelrc"),
-  html: path.join(process.cwd(), "index.html")
+  html: path.join(process.cwd(), "index.html"),
+  public: path.join(process.cwd(), "public/")
 };
 const isDev = process.env.NODE_ENV === "development";
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 let indexFile;
-const loadingFile = fs.readFileSync(path.join(__dirname, 'loading.html'));
+const loadingFile = fs.readFileSync(path.join(__dirname, "loading.html"));
 
 const htmlMinOptions = {
   collapseWhitespace: true,
@@ -44,15 +45,16 @@ const htmlOptions = indexHtmlExists
       filename: isDev ? "../../.tmp/index.html" : "../index.html",
       minify: isDev ? false : htmlMinOptions,
       alwaysWriteToDisk: true,
-      inlineSource: "sfo-client-dev.js$"
+      inlineSource: "sfo-client-dev.js$",
+      title: "sfo"
     }
   : {
       inject: false,
       template: "../index.ejs",
-      title: "SFO",
       filename: isDev ? "../../.tmp/index.html" : "../index.html",
       minify: isDev ? false : htmlMinOptions,
-      alwaysWriteToDisk: true
+      alwaysWriteToDisk: true,
+      title: "sfo"
     };
 // get configs
 const babelConfig = fs.existsSync(pathsToCheck.babel)
@@ -160,9 +162,7 @@ const config = {
     new ExtractTextPlugin("style.css"),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
-    }),
-    new HtmlWebpackPlugin(htmlOptions),
-    new HtmlHarddiskPlugin()
+    })
   ],
   module: {
     rules: [
@@ -209,9 +209,14 @@ if (!isDev) {
       dry: false,
       root: process.cwd()
     }),
-    new UglifyJSPlugin(),
-    new CopyPlugin([{ from: publicPath, to: path.join(buildPath, "public") }])
+    new UglifyJSPlugin()
   );
+
+  if (fs.existsSync(pathsToCheck.public)) {
+    config.plugins.push(
+      new CopyPlugin([{ from: publicPath, to: path.join(buildPath, "public") }])
+    );
+  }
 } else {
   if (indexHtmlExists) {
     config.plugins.push(new HtmlWebpackInlineSourcePlugin());
@@ -246,6 +251,15 @@ module.exports = (entry, options) => {
   if (options.isSizeAnalysis) {
     config.plugins.push(sizeAnalysisPlugin);
   }
+
+  if (options.title) {
+    htmlOptions.title = options.title;
+  }
+
+  config.plugins.push(
+    new HtmlWebpackPlugin(htmlOptions),
+    new HtmlHarddiskPlugin()
+  );
 
   return config;
 };
