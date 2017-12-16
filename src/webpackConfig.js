@@ -137,8 +137,8 @@ const config = {
       path.resolve(process.cwd(), "node_modules")
     ],
     alias: {
-      "babel-runtime": path.dirname(
-        require.resolve("babel-runtime/package.json")
+      "@babel/runtime": path.dirname(
+        require.resolve("@babel/runtime/package.json")
       )
     }
   },
