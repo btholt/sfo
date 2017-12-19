@@ -1,9 +1,9 @@
 module.exports = {
   babelrc: false,
   presets: [
-    require.resolve("babel-preset-flow"),
+    require.resolve("@babel/preset-flow"),
     [
-      require.resolve("babel-preset-env"),
+      require.resolve("@babel/preset-env"),
       {
         targets: {
           browsers: "last 2 versions"
@@ -14,9 +14,9 @@ module.exports = {
     ]
   ],
   plugins: [
-    require.resolve("babel-plugin-syntax-jsx"),
-    require.resolve("babel-plugin-syntax-dynamic-import"),
-    require.resolve("babel-plugin-transform-react-jsx"),
-    require.resolve("babel-plugin-transform-class-properties")
+    require.resolve("@babel/plugin-syntax-jsx"),
+    require.resolve("@babel/plugin-syntax-dynamic-import"),
+    require.resolve("@babel/plugin-transform-react-jsx"),
+    require.resolve("@babel/plugin-proposal-class-properties")
   ]
 };
