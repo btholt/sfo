@@ -12,7 +12,7 @@ In your entry file, just export a default function that accepts a DOM node. It's
 
 ## Is this tied to React/Angular/D3/Ember/Vue/etc.
 
-Nope! It works without whatever you want!
+Nope! It works with whatever you want!
 
 ## Example
 
