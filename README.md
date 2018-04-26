@@ -1,3 +1,7 @@
+# Deprecated
+
+This library was a ton of fun to create and I think had a pretty good developer experience. However I don't have the time or the use case anymore to devote to curating an ongoing great experience around it. In light of that, I'd say [Parcel](http://parceljs.org/) achieves the same goals that sfo aspired to. Highly recommended!
+
 <h1 align="center">sfo</h1> <br>
 <p align="center">
     <img alt="kick-ass-logo-eventually" title="Placeholder" src="https://drive.google.com/uc?id=1eNNthq-OAURyRVIdBj3D-Qh3ow5y7dWL" width="150">
