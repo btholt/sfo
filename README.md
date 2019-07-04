@@ -22,7 +22,7 @@ This library was a ton of fun to create and I think had a pretty good developer 
 
 A build process in a command. Just run:
 
-`npx sfo dev <your entry file>`
+`npm sfo dev <your entry file>`
 
 and SFO takes care of spinning up a build process and dev server for you!
 
